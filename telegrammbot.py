@@ -102,5 +102,12 @@ def answer(message):
         bot.send_message(message.chat.id, "Привет этот бот поможет тебе тренировать примеры на сложение и вычитание чисел. \n Выбери примеры ниже  ", reply_markup=button_enter_numbers())
 
 
+def main():
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0)
+        except:
+            bot.polling(none_stop=True, interval=0) 
+
 if __name__ == '__main__':
-    bot.polling(none_stop=True, interval=0)
+    main()

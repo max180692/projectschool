@@ -22,9 +22,14 @@ class SlojenieAndVichitanieChisel:
         #Задание переменной какого-то числа
         #Генерация примеров
         self.action = action
+        count = 0
         if len(self.list_random_primer)>0:
             self.list_random_primer.clear()
-        while self.count_sostav_chisla > 0:
+        if self.count_sostav_chisla > 10:
+            count = 10
+        if self.count_sostav_chisla > 20:
+            count = 20
+        while self.count_sostav_chisla > count:
             self.create_primer()
             self.count_sostav_chisla -= 1
 

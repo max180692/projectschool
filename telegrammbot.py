@@ -36,7 +36,7 @@ def button_action():
 
 def registration():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    button = types.KeyboardButton('Регистрация')
+    button = types.KeyboardButton('Начать')
     keyboard.add(button)
     return keyboard
 
@@ -52,24 +52,17 @@ def start(message):
 @bot.message_handler(content_types='text')
 def answer(message):
     if message.from_user.id not in registers_users:
-        bot.send_message(message.chat.id,"Вы не зарегистрированы. Зарегистрируйтесь.",reply_markup=registration())
-
+        bot.send_message(message.chat.id,"Нажми на кнопку \"Начать\"",reply_markup=registration())
     else:
         #какие примеры будут генерироваться
-        if message.text == settings.tuple_buttons[0]:
-            registers_users[message.from_user.id].set_sostav_chisla(10)
+        if message.text in settings.tuple_buttons:
+            print(message.text)
+            registers_users[message.from_user.id].set_sostav_chisla(settings.tuple_sostav_chisel[settings.tuple_buttons.index(message.text)])
             bot.send_message(message.chat.id, "Выбери что ты будешь делать\n если складывать то нажми на \"+\" \n если вычитать то нажми на \"-\"",reply_markup=button_action())
 
         #какое дейтствие будет выполняться
-        if message.text == settings.tuple_action[0]:
-            registers_users[message.from_user.id].enter_action('+')
-            registers_users[message.from_user.id].get_random_index()
-            primer = registers_users[message.from_user.id].get_random_primer()
-            result = registers_users[message.from_user.id].get_answer()
-            bot.send_message(message.chat.id,primer,reply_markup=button_numbers(result['variants_answers']))
-        
-        if message.text == settings.tuple_action[1]:
-            registers_users[message.from_user.id].enter_action('-')
+        if message.text in settings.tuple_action:
+            registers_users[message.from_user.id].enter_action(settings.tuple_action[settings.tuple_action.index(message.text)])
             registers_users[message.from_user.id].get_random_index()
             primer = registers_users[message.from_user.id].get_random_primer()
             result = registers_users[message.from_user.id].get_answer()
@@ -97,7 +90,8 @@ def answer(message):
                 bot.send_message(message.chat.id,primer,reply_markup=button_numbers(result['variants_answers']))
             else:
                 bot.send_message(message.chat.id,result)
-    if message.text == 'Регистрация':
+                
+    if message.text == 'Начать':
         registers_users[message.from_user.id] = GeneratePrimer()
         bot.send_message(message.chat.id, "Привет этот бот поможет тебе тренировать примеры на сложение и вычитание чисел. \n Выбери примеры ниже  ", reply_markup=button_enter_numbers())
 

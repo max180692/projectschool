@@ -20,12 +20,12 @@ class GeneratePrimer:
     def enter_action(self,action):
         if action == '+':
             self.slojenieandvichitaniechisel.set_sostav_chisla(self.sostav_chisla)
-            self.slojenieandvichitaniechisel.generation_primer_slojenie(action)
+            self.slojenieandvichitaniechisel.generation_primer(action)
             self.list_primer = self.slojenieandvichitaniechisel.get_list_primer()
             self.counts_primer = len(self.list_primer)
         elif action == '-':
             self.slojenieandvichitaniechisel.set_sostav_chisla(self.sostav_chisla)
-            self.slojenieandvichitaniechisel.generation_primer_slojenie(action)
+            self.slojenieandvichitaniechisel.generation_primer(action)
             self.list_primer = self.slojenieandvichitaniechisel.get_list_primer()
             self.counts_primer = len(self.list_primer)
             

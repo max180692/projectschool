@@ -18,7 +18,7 @@ class SlojenieAndVichitanieChisel:
                 self.primer = f'{self.count_sostav_chisla} - {i}'
             self.list_random_primer.append(self.primer)
 
-    def generation_primer_slojenie(self,action):
+    def generation_primer(self,action):
         #Задание переменной какого-то числа
         #Генерация примеров
         self.action = action

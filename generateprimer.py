@@ -1,6 +1,8 @@
 from generaterandomindex import GenerateRandomIndex
 from slojenieandvichitaniechisel import SlojenieAndVichitanieChisel
 from generaterandomotvet import GenerateRandomAnswer
+from mystikers import MyStikers
+import settings
 
 class GeneratePrimer:
 
@@ -9,8 +11,10 @@ class GeneratePrimer:
         self.slojenieandvichitaniechisel = SlojenieAndVichitanieChisel()
         self.generate_otvet = GenerateRandomAnswer
         self.generaterandomindex = GenerateRandomIndex
+        self.get_stikers = MyStikers
         self.answer = 0
         self.count = 0
+        self.message_my_count = ''
 
     def set_sostav_chisla(self,sostav_chisla):
         self.sostav_chisla = sostav_chisla
@@ -18,27 +22,25 @@ class GeneratePrimer:
 
 
     def enter_action(self,action):
-        if action == '+':
+        self.my_action = action
+        if action in settings.tuple_action:
             self.slojenieandvichitaniechisel.set_sostav_chisla(self.sostav_chisla)
-            self.slojenieandvichitaniechisel.generation_primer(action)
+            self.slojenieandvichitaniechisel.generation_primer_slojenie(settings.tuple_action[settings.tuple_action.index(action)])
             self.list_primer = self.slojenieandvichitaniechisel.get_list_primer()
+            #print(self.list_primer)
             self.counts_primer = len(self.list_primer)
-        elif action == '-':
-            self.slojenieandvichitaniechisel.set_sostav_chisla(self.sostav_chisla)
-            self.slojenieandvichitaniechisel.generation_primer(action)
-            self.list_primer = self.slojenieandvichitaniechisel.get_list_primer()
-            self.counts_primer = len(self.list_primer)
-            
+    
         
     def get_random_index(self):
-        self.list_random = self.generaterandomindex.generation_random_index(self)
+        self.list_random = self.generaterandomindex.generation_random_index(self.list_primer)
+        #print(self.list_random,'this function random')
 
     def get_random_primer(self):
         if len(self.list_random) > 0:
             index = self.list_random.pop()  
             self.primer = self.list_primer[index]
             return self.primer
-        return "Примеры закончились! Ура! Всего было "+str(self.counts_primer)+'\n' + 'Правильных ответов ' + str(self.count)
+        return {'message':"Примеры закончились! Ура! Всего было "+str(self.counts_primer)+'\n' + 'Правильных ответов ' + str(self.count),'stiker':self.get_stikers.get_stkers_best_count()}
             
     def get_answer(self):
         if '+' in self.primer:
@@ -59,5 +61,8 @@ class GeneratePrimer:
     def answers(self,my_answer):
         if int(my_answer) == self.dict_answer_primer['answer']:
             self.count += 1
-            return 'Ответ правильный! ' + str(self.dict_answer_primer['answer']) + 'Кол-во правильных ответов ' + str(self.count)
-        return 'Ответ неправильный! Правильный ответ ' + str(self.dict_answer_primer['answer']) 
+            return {'message':'Ответ правильный!' +'\nКол-во правильных ответов ' + str(self.count),'stiker':self.get_stikers.get_stikers_answer_true()}
+        return {'message':'Ответ неправильный! Правильный ответ ' + str(self.dict_answer_primer['answer']),'stiker':self.get_stikers.get_stikers_answer_false()}
+    
+    def clear_count(self):
+        self.count=0

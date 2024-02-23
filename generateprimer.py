@@ -25,7 +25,7 @@ class GeneratePrimer:
         self.my_action = action
         if action in settings.tuple_action:
             self.slojenieandvichitaniechisel.set_sostav_chisla(self.sostav_chisla)
-            self.slojenieandvichitaniechisel.generation_primer_slojenie(settings.tuple_action[settings.tuple_action.index(action)])
+            self.slojenieandvichitaniechisel.generation_primer(settings.tuple_action[settings.tuple_action.index(action)])
             self.list_primer = self.slojenieandvichitaniechisel.get_list_primer()
             #print(self.list_primer)
             self.counts_primer = len(self.list_primer)

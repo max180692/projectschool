@@ -86,7 +86,7 @@ def answer(message):
         #какие примеры будут генерироваться
         if message.text in settings.tuple_buttons:
             registers_users[message.from_user.id].set_sostav_chisla(settings.tuple_sostav_chisel[settings.tuple_buttons.index(message.text)])
-            bot.send_message(message.chat.id, "Выбери, что ты будешь делать\nесли складывать  нажми на \"+\"\n если вычитать нажми на \"-\"",reply_markup=button_action())
+            bot.send_message(message.chat.id, "Выбери, что ты будешь делать\nесли складывать  нажми на \"+\"\n если вычитать нажми на \"-\"\nесли случайные примеры нажми на \"Случайные примеры\"",reply_markup=button_action())
 
         #какое дейтствие будет выполняться
 
@@ -111,7 +111,7 @@ def answer(message):
         #возврат на выбор действия
         if message.text == 'Назад':
             registers_users[message.from_user.id].clear_count()
-            bot.send_message(message.chat.id, "Выбери что ты будешь делать\n если складывать то нажми на \"+\" \n если вычитать то нажми на \"-\"",reply_markup=button_action())
+            bot.send_message(message.chat.id, "Выбери, что ты будешь делать\nесли складывать  нажми на \"+\"\n если вычитать нажми на \"-\"\nесли случайные примеры нажми на \"Случайные примеры\"",reply_markup=button_action())
         
         if message.text == 'В начало':
             bot.send_message(message.chat.id, "Выбери примеры ниже",reply_markup=button_enter_numbers())

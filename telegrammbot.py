@@ -9,13 +9,14 @@ bot = telebot.TeleBot(API_KEY)
 registers_users = {}
 
 
-#сделать счет правильных ответов
+#создать таймер
+
 
 #
 
 #функция создания кнопок по выбору примеров
 def button_enter_numbers():
-    keyboard = types.ReplyKeyboardMarkup(row_width=3)
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=3)
     keyboard.add(*[types.KeyboardButton(button) for button in settings.tuple_buttons])
     #button_clear = types.KeyboardButton("Удалить очки")
     #button_get_count = types.KeyboardButton("Показать очки")
@@ -24,7 +25,7 @@ def button_enter_numbers():
     return keyboard
 #функция создания кнопок выбора варианта ответа
 def button_numbers(variants_answers):
-    keyboard = types.ReplyKeyboardMarkup(row_width=3)
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=3)
     keyboard.add(*[types.KeyboardButton(button) for button in variants_answers])
     button = types.KeyboardButton("Назад")
     keyboard.add(button)
@@ -32,14 +33,23 @@ def button_numbers(variants_answers):
 
 #функция по выбору действия + или -
 def button_action():
-    keyboard = types.ReplyKeyboardMarkup(row_width=3)
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=3)
     keyboard.add(*[types.KeyboardButton(button) for button in settings.tuple_action])
     button = types.KeyboardButton("В начало")
+    button_random_primer = types.KeyboardButton("Случайные примеры")
     #button_clear = types.KeyboardButton("Удалить очки")
     #button_get_count = types.KeyboardButton("Показать очки")
     #keyboard.add(button_get_count)
     #keyboard.add(button_clear)
+    keyboard.add(button_random_primer)
     keyboard.add(button)
+    return keyboard
+
+def create_random_primer():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=3)
+    keyboard.add(*[types.KeyboardButton(button) for button in settings.tuple_create_random_primer])
+    button_back = types.KeyboardButton('Назад')
+    keyboard.add(button_back)
     return keyboard
 
 
@@ -48,6 +58,7 @@ def close_button_action():
     button = types.KeyboardButton('Назад')
     keyboard.add(button)
     return keyboard
+
 
 def registration():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -62,6 +73,7 @@ def registration():
 def start(message):
     registers_users[message.from_user.id] = GeneratePrimer()
     print(registers_users)
+    print(len(registers_users))
     bot.send_message(message.chat.id, "Привет этот бот поможет тебе тренировать примеры на сложение и вычитание чисел. \n Выбери примеры ниже  ", reply_markup=button_enter_numbers())
 
 #слушатель сообщений, которые поступают в телеграмм бот
@@ -69,16 +81,29 @@ def start(message):
 def answer(message):
     if message.from_user.id not in registers_users:
         bot.send_message(message.chat.id,"Нажми на кнопку \"Начать\"",reply_markup=registration())
+
     else:
         #какие примеры будут генерироваться
         if message.text in settings.tuple_buttons:
             registers_users[message.from_user.id].set_sostav_chisla(settings.tuple_sostav_chisel[settings.tuple_buttons.index(message.text)])
-            bot.send_message(message.chat.id, "Выбери, что ты будешь делать\n если складывать то нажми на \"+\" \n если вычитать то нажми на \"-\"",reply_markup=button_action())
+            bot.send_message(message.chat.id, "Выбери, что ты будешь делать\nесли складывать  нажми на \"+\"\n если вычитать нажми на \"-\"",reply_markup=button_action())
 
         #какое дейтствие будет выполняться
+
         if message.text in settings.tuple_action:
             registers_users[message.from_user.id].enter_action(settings.tuple_action[settings.tuple_action.index(message.text)])
             registers_users[message.from_user.id].get_random_index()
+            primer = registers_users[message.from_user.id].get_random_primer()
+            result = registers_users[message.from_user.id].get_answer()
+            bot.send_message(message.chat.id,primer,reply_markup=button_numbers(result['variants_answers']))
+        
+        if message.text == 'Случайные примеры':
+            bot.send_message(message.chat.id,'Выбери сколько примеров хочешь сделать',reply_markup=create_random_primer())
+
+        if message.text in settings.tuple_create_random_primer:
+            registers_users[message.from_user.id].create_multiple_primerov(settings.tuple_random_numbers[settings.tuple_create_random_primer.index(message.text)])
+            registers_users[message.from_user.id].create_random_multiple_index()
+            registers_users[message.from_user.id].create_new_random_primer()
             primer = registers_users[message.from_user.id].get_random_primer()
             result = registers_users[message.from_user.id].get_answer()
             bot.send_message(message.chat.id,primer,reply_markup=button_numbers(result['variants_answers']))
@@ -109,10 +134,12 @@ def answer(message):
                 bot.send_sticker(message.chat.id,primer['stiker'])
                 bot.send_message(message.chat.id,primer['message'],reply_markup=close_button_action())
     #            
-                
     if message.text == 'Начать':
         registers_users[message.from_user.id] = GeneratePrimer()
+        print(registers_users)
+        print(len(registers_users))
         bot.send_message(message.chat.id, "Привет этот бот поможет тебе тренировать примеры на сложение и вычитание чисел. \n Выбери примеры ниже  ", reply_markup=button_enter_numbers())
+
 
 
 def main():
